@@ -6,7 +6,7 @@ services:
         ports:
             - "9000:9000"
         environment: 
-            ZK_HOSTS: "<host_ip>:2181"
+            ZK_HOSTS: "192.168.1.98:2181"
             APPLICATION_SECRET: "random-secret"
         restart: unless-stopped
 
@@ -16,5 +16,17 @@ services:
         ports:
             - "8000:8000"
         environment:
-            CONNECT_URL: "http://<host_ip>:8083"
+            CONNECT_URL: "http://192.168.1.98:8083"
+        restart: unless-stopped
+
+    sch-reg-ui:
+        image: landoop/schema-registry-ui
+        container_name: sch-reg-ui
+        ports:
+            - "7000:8000"
+        environment:
+            SCHEMAREGISTRY_URL: "http://192.168.1.98:8081"
+            ALLOW_GLOBAL: 1
+            ALLOW_DELETION: 1
+            PROXY: 1
         restart: unless-stopped
