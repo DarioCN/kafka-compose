@@ -6,6 +6,15 @@ services:
         ports:
             - "9000:9000"
         environment: 
-            ZK_HOSTS: "192.168.1.98:2181"
+            ZK_HOSTS: "<host_ip>:2181"
             APPLICATION_SECRET: "random-secret"
+        restart: unless-stopped
+
+    connect-ui:
+        image: landoop/kafka-connect-ui
+        container_name: connect-ui
+        ports:
+            - "8000:8000"
+        environment:
+            CONNECT_URL: "http://<host_ip>:8083"
         restart: unless-stopped

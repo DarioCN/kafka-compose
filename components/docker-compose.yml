@@ -24,7 +24,6 @@ services:
             KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181/kafka"
             KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
             KAFKA_DELETE_TOPIC_ENABLE: "true"
-            KAFKA_AUTOCREATE_TOPIC_ENABLE: "true"
         volumes:
             - kafka_data:/var/lib/kafka/data
         depends_on:
@@ -55,8 +54,11 @@ services:
             CONNECT_BOOTSTRAP_SERVERS: "kafka:9092"
             CONNECT_GROUP_ID: "connect-group"
             CONNECT_CONFIG_STORAGE_TOPIC: "_connect-config"
+            CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
             CONNECT_OFFSET_STORAGE_TOPIC: "_connect-offset"
+            CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
             CONNECT_STATUS_STORAGE_TOPIC: "_connect-status"
+            CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
             CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
             CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
             CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
@@ -66,7 +68,7 @@ services:
             CONNECT_REST_ADVERTISED_HOST_NAME: "connect"
             CONNECT_PLUGIN_PATH: "/usr/share/confluent-hub-components"
         volumes: 
-            - ./connectors:/usr/share/confluent-hub-components
+            - connectors:/usr/share/confluent-hub-components
         depends_on:
             - zookeeper
             - kafka
@@ -83,3 +85,4 @@ volumes:
     zookeeper_data:
     zookeeper_log:
     kafka_data:
+    connectors:
