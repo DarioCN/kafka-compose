@@ -24,6 +24,7 @@ services:
             KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181/kafka"
             KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
             KAFKA_DELETE_TOPIC_ENABLE: "true"
+            KAFKA_AUTOCREATE_TOPIC_ENABLE: "true"
         volumes:
             - kafka_data:/var/lib/kafka/data
         depends_on:
@@ -77,19 +78,6 @@ services:
             - |
               confluent-hub install --no-prompt apache/kafka-connect-plc4x-plc4j:0.8.0
               /etc/confluent/docker/run
-
-    cmak:
-        image: hlebalbau/kafka-manager
-        container_name: cmak
-        ports:
-            - "9000:9000"
-        environment: 
-            ZK_HOSTS: "zookeeper:2181"
-            APPLICATION_SECRET: "random-secret"
-        depends_on:
-            - zookeeper
-            - kafka
-        restart: unless-stopped
 
 volumes: 
     zookeeper_data:

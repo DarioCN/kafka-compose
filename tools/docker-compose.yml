@@ -1,0 +1,11 @@
+services:
+
+    cmak:
+        image: hlebalbau/kafka-manager
+        container_name: cmak
+        ports:
+            - "9000:9000"
+        environment: 
+            ZK_HOSTS: "192.168.1.98:2181"
+            APPLICATION_SECRET: "random-secret"
+        restart: unless-stopped
