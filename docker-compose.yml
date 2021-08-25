@@ -44,6 +44,40 @@ services:
             - kafka
         restart: unless-stopped
 
+    connect:
+        image: confluentinc/cp-kafka-connect
+        container_name: connect
+        hostname: connect
+        ports:
+            - "8083:8083"
+        environment: 
+            CONNECT_BOOTSTRAP_SERVERS: "kafka:9092"
+            CONNECT_GROUP_ID: "connect-group"
+            CONNECT_CONFIG_STORAGE_TOPIC: "_connect-config"
+            CONNECT_OFFSET_STORAGE_TOPIC: "_connect-offset"
+            CONNECT_STATUS_STORAGE_TOPIC: "_connect-status"
+            CONNECT_KEY_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+            CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+            CONNECT_VALUE_CONVERTER: "io.confluent.connect.avro.AvroConverter"
+            CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+            CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+            CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+            CONNECT_REST_ADVERTISED_HOST_NAME: "connect"
+            CONNECT_PLUGIN_PATH: "/usr/share/confluent-hub-components"
+        volumes: 
+            - ./connectors:/usr/share/confluent-hub-components
+        depends_on:
+            - zookeeper
+            - kafka
+            - schema-registry
+        restart: unless-stopped
+        command: 
+            - bash
+            - -c
+            - |
+              confluent-hub install --no-prompt apache/kafka-connect-plc4x-plc4j:0.8.0
+              /etc/confluent/docker/run
+
     cmak:
         image: hlebalbau/kafka-manager
         container_name: cmak
